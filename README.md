@@ -129,7 +129,7 @@ messages:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/EasyHomes.git
+   git clone https://github.com/bishowsky/EasyHomes.git
    cd EasyHomes
    ```
 
