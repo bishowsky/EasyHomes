@@ -1,0 +1,66 @@
+name: EasyHomes
+version: ${project.version}
+main: com.easyhomes.EasyHomes
+author: EasyHomes Team
+description: Simple home management plugin
+
+commands:
+  home:
+    description: Teleport to your home
+    usage: /<command> [name]
+    aliases: [h]
+  sethome:
+    description: Set a home at your current location
+    usage: /<command> <name>
+  delhome:
+    description: Delete a home
+    usage: /<command> <name>
+    aliases: [removehome]
+  easyhomes:
+    description: EasyHomes admin commands
+    usage: /<command> reload
+
+permissions:
+  easyhomes.*:
+    description: All EasyHomes permissions
+    children:
+      easyhomes.home: true
+      easyhomes.sethome: true
+      easyhomes.delhome: true
+      easyhomes.bypass.cooldown: true
+      easyhomes.bypass.combat: true
+      easyhomes.unlimited: true
+      easyhomes.reload: true
+  easyhomes.home:
+    description: Allow using /home command
+    default: true
+  easyhomes.sethome:
+    description: Allow using /sethome command
+    default: true
+  easyhomes.delhome:
+    description: Allow using /delhome command
+    default: true
+  easyhomes.reload:
+    description: Allow using /easyhomes reload command
+    default: op
+  easyhomes.bypass.cooldown:
+    description: Bypass teleport cooldown
+    default: op
+  easyhomes.bypass.combat:
+    description: Bypass combat tag restriction
+    default: op
+  easyhomes.limit.1:
+    description: Allow 1 home
+    default: true
+  easyhomes.limit.3:
+    description: Allow 3 homes
+    default: false
+  easyhomes.limit.5:
+    description: Allow 5 homes
+    default: false
+  easyhomes.limit.10:
+    description: Allow 10 homes
+    default: false
+  easyhomes.unlimited:
+    description: Allow unlimited homes
+    default: op

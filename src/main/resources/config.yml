@@ -1,0 +1,112 @@
+# EasyHomes Configuration
+
+# Teleportation settings
+teleport:
+  # Delay before teleportation (in seconds)
+  delay: 3
+  # Cancel teleport if player moves
+  cancel-on-move: true
+  
+  # Title settings during teleport countdown
+  title:
+    enabled: true
+    title: "&aTeleporting..."
+    subtitle: "&e{time} seconds remaining"
+  
+  # Particle effects settings
+  particles:
+    enabled: true
+    # Particle type (PORTAL, ENCHANTMENT_TABLE, FLAME, SPELL_WITCH, END_ROD, etc.)
+    # Compatible with 1.8+: PORTAL, ENCHANTMENT_TABLE, FLAME, SPELL_WITCH, VILLAGER_HAPPY
+    type: PORTAL
+    # Amount of particles to spawn
+    amount: 50
+    # Show particles at start location
+    show-at-start: true
+    # Show particles at destination
+    show-at-destination: true
+  
+  # Sound effects settings
+  sounds:
+    enabled: true
+    # Sound type (ENDERMAN_TELEPORT for 1.8, defaults to compatible sound)
+    type: ENDERMAN_TELEPORT
+    # Volume (0.0 to 1.0)
+    volume: 1.0
+    # Pitch (0.5 to 2.0)
+    pitch: 1.0
+
+# Cooldown settings (in seconds)
+cooldowns:
+  # Default cooldown for all players
+  default: 60
+  # Per-permission cooldowns (override default)
+  # Permission format: easyhomes.cooldown.<name>
+  groups:
+    vip: 30
+    premium: 15
+    admin: 0
+
+# Combat tag settings
+combat:
+  # Enable combat tagging
+  enabled: true
+  # Duration of combat tag (in seconds)
+  duration: 10
+  # Block teleportation during combat
+  block-teleport: true
+
+# Home limit settings
+homes:
+  # Default home limit (if no permission found)
+  default-limit: 1
+  # Permission-based limits
+  limits:
+    - permission: "easyhomes.limit.1"
+      limit: 1
+    - permission: "easyhomes.limit.3"
+      limit: 3
+    - permission: "easyhomes.limit.5"
+      limit: 5
+    - permission: "easyhomes.limit.10"
+      limit: 10
+    - permission: "easyhomes.unlimited"
+      limit: -1  # -1 means unlimited
+
+# Messages (English)
+messages:
+  prefix: "&8[&6EasyHomes&8]&r "
+  
+  # Home command messages
+  home-list: "&aList of your homes: &e{homes}"
+  home-teleporting: "&aTeleporting to home &e{home}&a in &e{delay}&a seconds..."
+  home-teleport-success: "&aSuccessfully teleported to home &e{home}&a!"
+  home-not-found: "&cHome &e{home}&c not found!"
+  no-homes: "&cYou have no homes! Use &e/sethome <name>&c to create one."
+  
+  # SetHome command messages
+  sethome-success: "&aHome &e{home}&a has been created!"
+  sethome-updated: "&aHome &e{home}&a has been updated!"
+  sethome-limit-reached: "&cHome limit reached! You can have a maximum of &e{limit}&c homes."
+  sethome-invalid-name: "&cInvalid home name! Use only letters, numbers, and underscores."
+  
+  # DelHome command messages
+  delhome-success: "&aHome &e{home}&a has been deleted!"
+  delhome-not-found: "&cHome &e{home}&c not found!"
+  
+  # Error messages
+  teleport-cancelled-move: "&cTeleportation cancelled - you moved!"
+  teleport-cancelled-damage: "&cTeleportation cancelled - you took damage!"
+  cooldown-active: "&cYou must wait &e{time}&c seconds before teleporting again!"
+  combat-active: "&cYou cannot teleport while in combat! Wait &e{time}&c seconds."
+  
+  # Usage messages
+  usage-home: "&cUsage: /home [name]"
+  usage-sethome: "&cUsage: /sethome <name>"
+  usage-delhome: "&cUsage: /delhome <name>"
+  usage-easyhomes: "&cUsage: /easyhomes reload"
+  
+  # Permission messages
+  no-permission: "&cYou do not have permission to use this command!"
+  reload-success: "&aConfiguration reloaded successfully!"
+  reload-no-permission: "&cYou do not have permission to reload the configuration!"
