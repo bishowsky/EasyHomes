@@ -16,7 +16,7 @@ A simple and efficient home management plugin for PaperMC servers (compatible wi
 
 ## Installation
 
-1. Download the latest `easyhomes.jar` from the [Releases](https://github.com/yourusername/EasyHomes/releases) page.
+1. Download the latest `easyhomes.jar` from the [Releases](https://github.com/bishowsky/EasyHomes/releases) page.
 2. Place the JAR file in your server's `plugins/` directory.
 3. Restart or reload your server.
 4. Configure the plugin in `plugins/EasyHomes/config.yml`.
