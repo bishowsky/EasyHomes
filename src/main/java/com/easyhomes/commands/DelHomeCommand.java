@@ -1,6 +1,8 @@
 package com.easyhomes.commands;
 
+import com.easyhomes.hooks.VaultManager;
 import com.easyhomes.manager.HomeManager;
+import com.easyhomes.util.DebugManager;
 import com.easyhomes.util.MessageUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,10 +16,14 @@ import java.util.List;
 
 public class DelHomeCommand implements CommandExecutor, TabCompleter {
     private final HomeManager homeManager;
+    private final VaultManager vaultManager;
+    private final DebugManager debugManager;
     private final FileConfiguration config;
 
-    public DelHomeCommand(HomeManager homeManager, FileConfiguration config) {
+    public DelHomeCommand(HomeManager homeManager, VaultManager vaultManager, DebugManager debugManager, FileConfiguration config) {
         this.homeManager = homeManager;
+        this.vaultManager = vaultManager;
+        this.debugManager = debugManager;
         this.config = config;
     }
 
@@ -50,6 +56,23 @@ public class DelHomeCommand implements CommandExecutor, TabCompleter {
 
         // Delete the home
         homeManager.deleteHome(player, homeName);
+        debugManager.log(player.getName() + " deleted home: " + homeName);
+        
+        // Refund if enabled
+        if (vaultManager != null && vaultManager.isEnabled() && config.getBoolean("economy.enabled", false)) {
+            if (config.getBoolean("economy.refund-on-delete", false)) {
+                double sethomeCost = config.getDouble("economy.sethome-cost", 0);
+                int refundPercent = config.getInt("economy.refund-percentage", 50);
+                
+                if (sethomeCost > 0 && refundPercent > 0) {
+                    double refund = (sethomeCost * refundPercent) / 100.0;
+                    vaultManager.deposit(player, refund);
+                    player.sendMessage(getMessage("economy-refund", "amount", vaultManager.format(refund)));
+                    debugManager.log(player.getName() + " received refund: " + refund);
+                }
+            }
+        }
+        
         player.sendMessage(getMessage("delhome-success", "home", homeName));
 
         return true;
@@ -57,7 +80,7 @@ public class DelHomeCommand implements CommandExecutor, TabCompleter {
 
     private String getMessage(String key, Object... replacements) {
         String prefix = config.getString("messages.prefix", "&8[&6EasyHomes&8]&r ");
-        String message = config.getString("messages." + key, "&cMessage not found: " + key);
+        String message = config.getString("messages." + key, "&cWiadomość nie znaleziona: " + key);
         return MessageUtil.format(prefix + message, replacements);
     }
 

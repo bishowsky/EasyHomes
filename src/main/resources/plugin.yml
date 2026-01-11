@@ -1,8 +1,11 @@
 name: EasyHomes
-version: ${project.version}
+version: 1.0.0
 main: com.easyhomes.EasyHomes
-author: EasyHomes Team
-description: Simple home management plugin
+author: Bishyy
+website: https://discord.gg/mkyU3SgBUP
+description: Professional home management system with MySQL, cache, economy and integrations
+api-version: 1.13
+softdepend: [Vault, PlaceholderAPI, WorldGuard]
 
 commands:
   home:
@@ -15,10 +18,11 @@ commands:
   delhome:
     description: Delete a home
     usage: /<command> <name>
-    aliases: [removehome]
+    aliases: [removehome, remhome]
   easyhomes:
     description: EasyHomes admin commands
-    usage: /<command> reload
+    usage: /<command> <reload|debug>
+    aliases: [eh, ehomes]
 
 permissions:
   easyhomes.*:
@@ -29,8 +33,10 @@ permissions:
       easyhomes.delhome: true
       easyhomes.bypass.cooldown: true
       easyhomes.bypass.combat: true
+      easyhomes.bypass.cost: true
       easyhomes.unlimited: true
       easyhomes.reload: true
+      easyhomes.debug: true
   easyhomes.home:
     description: Allow using /home command
     default: true
@@ -41,13 +47,19 @@ permissions:
     description: Allow using /delhome command
     default: true
   easyhomes.reload:
-    description: Allow using /easyhomes reload command
+    description: Allow reloading configuration
+    default: op
+  easyhomes.debug:
+    description: Allow enabling debug mode
     default: op
   easyhomes.bypass.cooldown:
     description: Bypass teleport cooldown
     default: op
   easyhomes.bypass.combat:
     description: Bypass combat tag restriction
+    default: op
+  easyhomes.bypass.cost:
+    description: Bypass economy costs
     default: op
   easyhomes.limit.1:
     description: Allow 1 home
@@ -61,6 +73,15 @@ permissions:
   easyhomes.limit.10:
     description: Allow 10 homes
     default: false
+  easyhomes.limit.15:
+    description: Allow 15 homes
+    default: false
+  easyhomes.limit.25:
+    description: Allow 25 homes
+    default: false
+  easyhomes.limit.50:
+    description: Allow 50 homes
+    default: false
   easyhomes.unlimited:
-    description: Allow unlimited homes
+    description: Unlimited homes
     default: op

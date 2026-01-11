@@ -1,35 +1,60 @@
 # EasyHomes Configuration
+# Author: Bishyy
+# Discord Support: https://discord.gg/mkyU3SgBUP
+
+# Data storage system
+storage:
+  # Type: YAML or MYSQL
+  type: MYSQL
+  
+  # MySQL configuration (required when type: MYSQL)
+  mysql:
+    host: localhost
+    port: 3306
+    database: minecraft
+    username: root
+    password: ""
+    use-ssl: false
+    pool-size: 10
+    connection-timeout: 5000
+
+# Cache system (memory cache)
+cache:
+  enabled: true
+  # Cache lifetime in seconds (300 = 5 minutes)
+  ttl-seconds: 300
+  # Maximum number of players in cache
+  max-size: 10000
 
 # Teleportation settings
 teleport:
   # Delay before teleportation (in seconds)
   delay: 3
-  # Cancel teleport if player moves
+  # Cancel teleportation when player moves
   cancel-on-move: true
   
-  # Title settings during teleport countdown
+  # Title during teleport countdown
   title:
     enabled: true
     title: "&aTeleporting..."
     subtitle: "&e{time} seconds remaining"
   
-  # Particle effects settings
+  # Particle effects
   particles:
     enabled: true
-    # Particle type (PORTAL, ENCHANTMENT_TABLE, FLAME, SPELL_WITCH, END_ROD, etc.)
-    # Compatible with 1.8+: PORTAL, ENCHANTMENT_TABLE, FLAME, SPELL_WITCH, VILLAGER_HAPPY
+    # Particle type (PORTAL, ENCHANTMENT_TABLE, FLAME, SPELL_WITCH, END_ROD)
     type: PORTAL
-    # Amount of particles to spawn
+    # Amount of particles
     amount: 50
     # Show particles at start location
     show-at-start: true
     # Show particles at destination
     show-at-destination: true
   
-  # Sound effects settings
+  # Sound effects
   sounds:
     enabled: true
-    # Sound type (ENDERMAN_TELEPORT for 1.8, defaults to compatible sound)
+    # Sound type
     type: ENDERMAN_TELEPORT
     # Volume (0.0 to 1.0)
     volume: 1.0
@@ -41,72 +66,97 @@ cooldowns:
   # Default cooldown for all players
   default: 60
   # Per-permission cooldowns (override default)
-  # Permission format: easyhomes.cooldown.<name>
+  # Permission: easyhomes.cooldown.<name>
   groups:
     vip: 30
     premium: 15
     admin: 0
 
-# Combat tag settings
+# Ustawienia combat tagu
 combat:
-  # Enable combat tagging
+  # Włącz system combat tagu
   enabled: true
-  # Duration of combat tag (in seconds)
+  # Czas trwania combat tagu (w sekundach)
   duration: 10
-  # Block teleportation during combat
+  # Blokuj teleportację podczas walki
   block-teleport: true
 
-# Home limit settings
+# Ustawienia limitów domów
 homes:
-  # Default home limit (if no permission found)
+  # Domyślny limit domów (gdy brak permisji)
   default-limit: 1
-  # Permission-based limits
-  limits:
-    - permission: "easyhomes.limit.1"
-      limit: 1
-    - permission: "easyhomes.limit.3"
-      limit: 3
-    - permission: "easyhomes.limit.5"
-      limit: 5
-    - permission: "easyhomes.limit.10"
-      limit: 10
-    - permission: "easyhomes.unlimited"
-      limit: -1  # -1 means unlimited
+  # Limity są oparte na permisjach: easyhomes.limit.1, easyhomes.limit.3, itd.
+  # easyhomes.unlimited = nielimitowane domy
+
+# Ekonomia (wymaga Vault)
+economy:
+  enabled: false
+  # Koszt teleportacji do domu
+  teleport-cost: 0
+  # Koszt za każdy blok dystansu (0 = wyłączone)
+  cost-per-distance: 0.0
+  # Koszt ustawienia nowego domu
+  sethome-cost: 0
+  # Zwrot pieniędzy przy usuwaniu domu
+  refund-on-delete: false
+  # Procent zwrotu (0-100)
+  refund-percentage: 50
+
+# WorldGuard integration
+worldguard:
+  # Check if player can build before setting home
+  check-build-permission: true
+  # Block setting homes in specific regions
+  blocked-regions: []
+  # Example: ["spawn", "pvp_arena"]
 
 # Messages (English)
 messages:
   prefix: "&8[&6EasyHomes&8]&r "
   
-  # Home command messages
+  # Home commands
   home-list: "&aList of your homes: &e{homes}"
   home-teleporting: "&aTeleporting to home &e{home}&a in &e{delay}&a seconds..."
   home-teleport-success: "&aSuccessfully teleported to home &e{home}&a!"
   home-not-found: "&cHome &e{home}&c not found!"
   no-homes: "&cYou have no homes! Use &e/sethome <name>&c to create one."
   
-  # SetHome command messages
+  # SetHome commands
   sethome-success: "&aHome &e{home}&a has been created!"
   sethome-updated: "&aHome &e{home}&a has been updated!"
   sethome-limit-reached: "&cHome limit reached! You can have a maximum of &e{limit}&c homes."
   sethome-invalid-name: "&cInvalid home name! Use only letters, numbers, and underscores."
+  sethome-no-permission-region: "&cYou cannot set a home here! (no build permission in region)"
   
-  # DelHome command messages
+  # DelHome commands
   delhome-success: "&aHome &e{home}&a has been deleted!"
   delhome-not-found: "&cHome &e{home}&c not found!"
   
-  # Error messages
+  # Errors
   teleport-cancelled-move: "&cTeleportation cancelled - you moved!"
   teleport-cancelled-damage: "&cTeleportation cancelled - you took damage!"
   cooldown-active: "&cYou must wait &e{time}&c seconds before teleporting again!"
   combat-active: "&cYou cannot teleport while in combat! Wait &e{time}&c seconds."
+  world-not-found: "&cHome world not found! Was it deleted?"
   
-  # Usage messages
+  # Economy
+  economy-insufficient-funds: "&cInsufficient funds! You need: &e{cost}"
+  economy-teleport-cost: "&aTeleportation cost: &e{cost}"
+  economy-sethome-cost: "&aHome creation cost: &e{cost}"
+  economy-refund: "&aRefund: &e{amount}"
+  
+  # Command usage
   usage-home: "&cUsage: /home [name]"
   usage-sethome: "&cUsage: /sethome <name>"
   usage-delhome: "&cUsage: /delhome <name>"
-  usage-easyhomes: "&cUsage: /easyhomes reload"
+  usage-easyhomes: "&cUsage: /easyhomes <reload|debug>"
   
-  # Permission messages
+  # Permissions
   no-permission: "&cYou do not have permission to use this command!"
   reload-success: "&aConfiguration reloaded successfully!"
   reload-no-permission: "&cYou do not have permission to reload the configuration!"
+  
+  # Debug
+  debug-enabled: "&aDebug mode enabled! Logs saved to: &e{path}"
+  debug-disabled: "&cDebug mode disabled!"
+  debug-no-permission: "&cYou do not have permission to use debug mode!"

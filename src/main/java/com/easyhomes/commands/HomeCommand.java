@@ -1,10 +1,12 @@
 package com.easyhomes.commands;
 
+import com.easyhomes.hooks.VaultManager;
 import com.easyhomes.manager.CombatManager;
 import com.easyhomes.manager.CooldownManager;
 import com.easyhomes.manager.HomeManager;
 import com.easyhomes.manager.TeleportManager;
 import com.easyhomes.model.Home;
+import com.easyhomes.util.DebugManager;
 import com.easyhomes.util.MessageUtil;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -24,15 +26,20 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
     private final CooldownManager cooldownManager;
     private final CombatManager combatManager;
     private final TeleportManager teleportManager;
+    private final VaultManager vaultManager;
+    private final DebugManager debugManager;
     private final FileConfiguration config;
 
     public HomeCommand(HomeManager homeManager, CooldownManager cooldownManager,
             CombatManager combatManager, TeleportManager teleportManager,
+            VaultManager vaultManager, DebugManager debugManager,
             FileConfiguration config) {
         this.homeManager = homeManager;
         this.cooldownManager = cooldownManager;
         this.combatManager = combatManager;
         this.teleportManager = teleportManager;
+        this.vaultManager = vaultManager;
+        this.debugManager = debugManager;
         this.config = config;
     }
 
@@ -85,19 +92,46 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        // Check economy cost
+        if (vaultManager != null && vaultManager.isEnabled() && config.getBoolean("economy.enabled", false)) {
+            double baseCost = config.getDouble("economy.teleport-cost", 0);
+            double costPerDistance = config.getDouble("economy.cost-per-distance", 0);
+            
+            double totalCost = baseCost;
+            
+            if (costPerDistance > 0 && location.getWorld().equals(player.getWorld())) {
+                double distance = player.getLocation().distance(location);
+                totalCost += distance * costPerDistance;
+            }
+            
+            if (totalCost > 0 && !player.hasPermission("easyhomes.bypass.cost")) {
+                if (!vaultManager.has(player, totalCost)) {
+                    player.sendMessage(getMessage("economy-insufficient-funds", "cost", vaultManager.format(totalCost)));
+                    return true;
+                }
+                
+                vaultManager.withdraw(player, totalCost);
+                player.sendMessage(getMessage("economy-teleport-cost", "cost", vaultManager.format(totalCost)));
+                debugManager.log(player.getName() + " paid " + totalCost + " for teleport to " + homeName);
+            }
+        }
+
         // Start teleport
         int delay = config.getInt("teleport.delay", 3);
         player.sendMessage(getMessage("home-teleporting", "home", homeName, "delay", delay));
+        debugManager.logTeleport(player.getName(), homeName, false);
 
         teleportManager.teleport(player, location,
                 () -> {
                     // On success
                     player.sendMessage(getMessage("home-teleport-success", "home", homeName));
                     cooldownManager.setCooldown(player);
+                    debugManager.logTeleport(player.getName(), homeName, true);
                 },
                 () -> {
                     // On cancel
                     player.sendMessage(getMessage("teleport-cancelled-move"));
+                    debugManager.logTeleport(player.getName(), homeName, false);
                 });
 
         return true;
@@ -121,7 +155,7 @@ public class HomeCommand implements CommandExecutor, TabCompleter {
 
     private String getMessage(String key, Object... replacements) {
         String prefix = config.getString("messages.prefix", "&8[&6EasyHomes&8]&r ");
-        String message = config.getString("messages." + key, "&cMessage not found: " + key);
+        String message = config.getString("messages." + key, "&cWiadomość nie znaleziona: " + key);
         return MessageUtil.format(prefix + message, replacements);
     }
 

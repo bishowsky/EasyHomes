@@ -1,126 +1,212 @@
 # EasyHomes
 
-A simple and efficient home management plugin for PaperMC servers (compatible with versions 1.8 to 1.21.10). Allows players to set, teleport to, and manage their homes with features like cooldowns, teleport delays, particle effects, and permission-based limits.
+**Professional home management system for PaperMC/Spigot servers**
 
-## Features
+Modern, high-performance home plugin with MySQL, caching, economy, and advanced integrations. Free and open-source!
 
-- **Home Management**: Set, teleport to, and delete homes.
-- **Teleportation System**: Configurable delay with movement cancellation, particle and sound effects.
-- **Title Display**: Shows countdown title during teleportation.
-- **Cooldowns**: Prevent spamming with configurable cooldowns.
-- **Combat Protection**: Blocks teleportation during combat.
-- **Permission-Based Limits**: Flexible home limits via permissions or config.
-- **Tab Completion**: Auto-complete home names in commands.
-- **Admin Commands**: Reload config without server restart.
-- **Multi-Version Support**: Works on Paper 1.8+.
+**Author:** Bishyy  
+**Discord Support:** https://discord.gg/mkyU3SgBUP  
+**Version:** 1.0.0  
+**Compatibility:** Paper/Spigot 1.8+ (recommended 1.13+)
 
-## Installation
+## ✨ Features
 
-1. Download the latest `easyhomes.jar` from the [Releases](https://github.com/bishowsky/EasyHomes/releases) page.
-2. Place the JAR file in your server's `plugins/` directory.
-3. Restart or reload your server.
-4. Configure the plugin in `plugins/EasyHomes/config.yml`.
+### 🏠 Home Management
+- **MySQL Storage** - Professional database with HikariCP connection pool
+- **YAML Fallback** - Automatic fallback to YAML when MySQL unavailable
+- **Guava Cache** - Intelligent caching with TTL and auto-eviction
+- **Async Operations** - All IO operations are asynchronous
+- **Per-Permission Limits** - `easyhomes.limit.1/3/5/10/15/25/50/unlimited`
 
-## Commands
+### 🚀 Teleportation System
+- **Configurable Delay** - Delay before teleportation (with move cancellation)
+- **Particle Effects** - Particle effects (PORTAL, FLAME, etc.)
+- **Sound Effects** - Teleportation sounds
+- **Title/Subtitle** - Countdown on player screen
+- **Combat Tag** - Block teleportation during combat
+
+### 💰 Economy (Vault)
+- **Teleportation Costs** - Fixed cost + distance cost
+- **Home Creation Costs** - Paid home slots
+- **Refund System** - Money refund when deleting homes
+- **Bypass Permissions** - `easyhomes.bypass.cost`
+
+### 🛡️ WorldGuard Integration
+- **Region Permissions** - Check build permissions
+- **Blocked Regions** - List of regions where homes cannot be set
+- **Safe Zones** - Integration with region system
+
+### 📊 PlaceholderAPI
+- `%easyhomes_count%` - Player's home count
+- `%easyhomes_limit%` - Home limit
+- `%easyhomes_available%` - Available slots
+- `%easyhomes_list%` - Home list (comma-separated)
+- `%easyhomes_cooldown%` - Remaining cooldown
+- `%easyhomes_combat%` - Remaining combat tag time
+- `%easyhomes_has_homes%` - true/false
+- `%easyhomes_in_combat%` - true/false
+- `%easyhomes_at_limit%` - true/false
+
+### 🐛 Debug System
+- **Toggle Command** - `/easyhomes debug on/off`
+- **File Logging** - Logs saved to `plugins/EasyHomes/logs/`
+- **Performance Tracking** - Database operation monitoring
+- **Command Logging** - Command execution history
+
+## 📥 Installation
+
+1. Download the latest `easyhomes.jar`
+2. Place JAR in `plugins/` folder
+3. **(Optional)** Configure MySQL in `config.yml`
+4. Start/restart server
+5. Done!
+
+## 🎮 Commands
 
 | Command | Description | Permission |
 |---------|-------------|------------|
-| `/home [name]` | Teleport to a home (or list homes if no name) | `easyhomes.home` |
-| `/sethome <name>` | Set a home at your location | `easyhomes.sethome` |
-| `/delhome <name>` | Delete a home | `easyhomes.delhome` |
-| `/easyhomes reload` | Reload the configuration | `easyhomes.reload` |
+| `/home [name]` | Teleport to home (or list homes) | `easyhomes.home` |
+| `/sethome <name>` | Set home at current location | `easyhomes.sethome` |
+| `/delhome <name>` | Delete home | `easyhomes.delhome` |
+| `/easyhomes reload` | Reload configuration | `easyhomes.reload` |
+| `/easyhomes debug <on/off>` | Enable/disable debug mode | `easyhomes.debug` |
 
 ### Aliases
-- `/h` for `/home`
+- `/h` = `/home`
+- `/eh` = `/easyhomes`
+- `/remhome` = `/delhome`
 
-## Permissions
+## 🔑 Permissions
 
+### Basic
 | Permission | Description | Default |
 |------------|-------------|---------|
-| `easyhomes.home` | Use `/home` command | true |
-| `easyhomes.sethome` | Use `/sethome` command | true |
-| `easyhomes.delhome` | Use `/delhome` command | true |
-| `easyhomes.reload` | Use `/easyhomes reload` | op |
-| `easyhomes.bypass.cooldown` | Bypass teleport cooldowns | op |
-| `easyhomes.bypass.combat` | Bypass combat restrictions | op |
-| Custom limits (see config) | Set home limits | varies |
+| `easyhomes.*` | All permissions | op |
+| `easyhomes.home` | `/home` command | true |
+| `easyhomes.sethome` | `/sethome` command | true |
+| `easyhomes.delhome` | `/delhome` command | true |
+| `easyhomes.reload` | Reload config | op |
+| `easyhomes.debug` | Debug mode | op |
 
-## Configuration
+### Bypasses
+| Permission | Description |
+|------------|-------------|
+| `easyhomes.bypass.cooldown` | Bypass cooldown |
+| `easyhomes.bypass.combat` | Bypass combat tag |
+| `easyhomes.bypass.cost` | Bypass economy costs |
 
-Edit `plugins/EasyHomes/config.yml` to customize the plugin. Below is an example configuration:
+### Home Limits
+| Permission | Homes |
+|------------|-------|
+| `easyhomes.limit.1` | 1 home |
+| `easyhomes.limit.3` | 3 homes |
+| `easyhomes.limit.5` | 5 homes |
+| `easyhomes.limit.10` | 10 homes |
+| `easyhomes.limit.15` | 15 homes |
+| `easyhomes.limit.25` | 25 homes |
+| `easyhomes.limit.50` | 50 homes |
+| `easyhomes.unlimited` | Unlimited |
+
+## ⚙️ Configuration
+
+### Storage (MySQL or YAML)
 
 ```yaml
-# EasyHomes Configuration
+storage:
+  type: MYSQL  # or YAML for fallback
+  mysql:
+    host: localhost
+    port: 3306
+    database: minecraft
+    username: root
+    password: ""
+    use-ssl: false
+    pool-size: 10
+    connection-timeout: 5000
 
-# Teleportation settings
-teleport:
-  delay: 3
-  cancel-on-move: true
-  title:
-    enabled: true
-    title: "&aTeleporting..."
-    subtitle: "&e{time} seconds remaining"
-  particles:
-    enabled: true
-    type: "PORTAL"
-    amount: 50
-    show-at-start: true
-    show-at-destination: true
-  sounds:
-    enabled: true
-    type: "ENDERMAN_TELEPORT"
-    volume: 1.0
-    pitch: 1.0
-
-# Cooldown settings (in seconds)
-cooldowns:
-  default: 60
-  groups:
-    vip: 30
-    premium: 15
-
-# Combat tag settings
-combat:
+cache:
   enabled: true
-  duration: 10
-  block-teleport: true
-
-# Home limit settings
-homes:
-  default-limit: 1
-  limits:
-    - permission: "easyhomes.limit.1"
-      limit: 1
-    - permission: "easyhomes.limit.3"
-      limit: 3
-    - permission: "easyhomes.limit.5"
-      limit: 5
-    - permission: "easyhomes.unlimited"
-      limit: -1
-
-# Messages (English)
-messages:
-  prefix: "&8[&6EasyHomes&8]&r "
-  home-list: "&aList of your homes: &e{homes}"
-  home-teleporting: "&aTeleporting to home &e{home}&a in &e{delay}&a seconds..."
-  home-teleport-success: "&aSuccessfully teleported to home &e{home}&a!"
-  home-not-found: "&cHome &e{home}&c not found!"
-  no-homes: "&cYou have no homes! Use &e/sethome <name>&c to create one."
-  sethome-success: "&aHome &e{home}&a has been created!"
-  sethome-updated: "&aHome &e{home}&a has been updated!"
-  sethome-limit-reached: "&cHome limit reached! You can have a maximum of &e{limit}&c homes."
-  sethome-invalid-name: "&cInvalid home name! Use only letters, numbers, and underscores."
-  delhome-success: "&aHome &e{home}&a has been deleted!"
-  delhome-not-found: "&cHome &e{home}&c not found!"
-  teleport-cancelled-move: "&cTeleportation cancelled - you moved!"
-  teleport-cancelled-damage: "&cTeleportation cancelled - you took damage!"
-  cooldown-active: "&cYou must wait &e{time}&c seconds before teleporting again!"
-  combat-active: "&cYou cannot teleport while in combat! Wait &e{time}&c seconds."
-  usage-home: "&cUsage: /home [name]"
-  usage-sethome: "&cUsage: /sethome <name>"
-  usage-delhome: "&cUsage: /delhome <name>"
-  usage-easyhomes: "&cUsage: /easyhomes reload"
-  no-permission: "&cYou do not have permission to use this command!"
-  reload-success: "&aConfiguration reloaded successfully!"
-  reload-no-permission: "&cYou do not have permission to reload the configuration!"
+  ttl-seconds: 300  # 5 minutes
+  max-size: 10000   # max players in cache
 ```
+
+### Economy (requires Vault)
+
+```yaml
+economy:
+  enabled: false
+  teleport-cost: 100      # teleport cost
+  cost-per-distance: 0.1  # 0.1 per block
+  sethome-cost: 500       # home creation cost
+  refund-on-delete: true  # refund on deletion
+  refund-percentage: 50   # 50% refund
+```
+
+### Full config.yml
+
+Check `config.yml` in the plugin for full configuration with English comments!
+
+## 🔧 For Developers
+
+### Building
+
+```bash
+git clone https://github.com/bishowsky/EasyHomes.git
+cd EasyHomes
+gradlew shadowJar
+```
+
+JAR will be in `build/libs/easyhomes.jar`
+
+### Project Structure
+
+```
+EasyHomes/
+├── commands/         - Commands (/home, /sethome, /delhome)
+├── database/         - MySQL (DatabaseManager, MySQLStorage)
+├── hooks/            - Integrations (Vault, PlaceholderAPI, WorldGuard)
+├── listeners/        - Event listeners
+├── manager/          - Business logic (Home, Combat, Cooldown, Teleport)
+├── model/            - Data models (Home)
+├── storage/          - Storage abstraction (YAML/MySQL)
+└── util/             - Utilities (Debug, Message, etc.)
+```
+
+## 🆘 Support
+
+- **Discord:** https://discord.gg/mkyU3SgBUP
+- **Issues:** [GitHub Issues](https://github.com/bishowsky/EasyHomes/issues)
+- **Wiki:** [GitHub Wiki](https://github.com/bishowsky/EasyHomes/wiki)
+
+## 📜 License
+
+Free and open-source! Use as needed.
+
+## 🙏 Credits
+
+- **Paper Team** - For great API
+- **PlaceholderAPI** - For placeholder system
+- **Vault** - For economy unification
+- **WorldGuard** - For region system
+- **HikariCP** - For efficient connection pooling
+- **Guava** - For cache system
+
+## 📝 Changelog
+
+### v1.0.0 (2026-01-11)
+- ✨ MySQL storage with HikariCP
+- ✨ Guava cache with TTL and auto-eviction
+- ✨ Vault integration (economy)
+- ✨ PlaceholderAPI support
+- ✨ WorldGuard integration
+- ✨ Debug system (`/easyhomes debug`)
+- ✨ Per-permission limits (1/3/5/10/15/25/50/unlimited)
+- ✨ English messages
+- ✨ Auto-fallback to YAML when MySQL unavailable
+- 🐛 Many performance fixes
+- 📝 Full documentation
+
+---
+
+**Made with ❤️ by Bishyy**  
+**Discord:** discord.gg/mkyU3SgBUP

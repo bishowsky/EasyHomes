@@ -22,20 +22,38 @@ public class HomeManager {
 
     /**
      * Get maximum homes allowed for a player
+     * Checks permissions in order: unlimited, 10, 5, 3, 1
      */
     public int getHomeLimit(Player player) {
         // Check for unlimited permission first
-        if (config.getConfigurationSection("homes.limits") != null) {
-            for (String key : config.getConfigurationSection("homes.limits").getKeys(false)) {
-                String perm = config.getString("homes.limits." + key + ".permission");
-                int limit = config.getInt("homes.limits." + key + ".limit");
-                if (player.hasPermission(perm)) {
-                    return limit == -1 ? Integer.MAX_VALUE : limit;
-                }
-            }
+        if (player.hasPermission("easyhomes.unlimited")) {
+            return -1; // Unlimited
+        }
+        
+        // Check for numeric limits (highest to lowest)
+        if (player.hasPermission("easyhomes.limit.50")) {
+            return 50;
+        }
+        if (player.hasPermission("easyhomes.limit.25")) {
+            return 25;
+        }
+        if (player.hasPermission("easyhomes.limit.15")) {
+            return 15;
+        }
+        if (player.hasPermission("easyhomes.limit.10")) {
+            return 10;
+        }
+        if (player.hasPermission("easyhomes.limit.5")) {
+            return 5;
+        }
+        if (player.hasPermission("easyhomes.limit.3")) {
+            return 3;
+        }
+        if (player.hasPermission("easyhomes.limit.1")) {
+            return 1;
         }
 
-        // Fallback to default limit
+        // Fallback to default limit from config
         return config.getInt("homes.default-limit", 1);
     }
 
@@ -45,6 +63,12 @@ public class HomeManager {
     public boolean canSetMoreHomes(Player player) {
         int current = getHomeCount(player);
         int limit = getHomeLimit(player);
+        
+        // -1 means unlimited
+        if (limit == -1) {
+            return true;
+        }
+        
         return current < limit;
     }
 
